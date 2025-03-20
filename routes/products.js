@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
 
 // GET /products/new - Display the new product form
 router.get("/new", (req, res) => {
-  res.render("products/new", { title: "Create New Product" });
+  res.render("products/new", { title: "Add New Product" });
 });
 
 // POST /products - Create a new product in the database

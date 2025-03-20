@@ -22,6 +22,14 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use((req, res, next) => {
+  res.locals.bootstrapCSS =
+    "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
+  res.locals.bootstrapJS =
+    "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js";
+  next();
+});
+
 // Connect to MongoDB Atlas
 mongoose
   .connect(process.env.MONGODB_URI)
