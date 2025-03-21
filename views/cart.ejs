@@ -1,0 +1,60 @@
+<%- include('partials/header.ejs') %>
+<div class="container my-4">
+  <h2><%= title %></h2>
+  <% if (cart.length === 0) { %>
+  <p>Your cart is empty.</p>
+  <% } else { %>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Total</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% cart.forEach(item => { %>
+      <tr>
+        <td><%= item.product.name %></td>
+        <td>$<%= item.product.price.toFixed(2) %></td>
+        <td>
+          <form action="/cart/update" method="POST" class="d-flex">
+            <input
+              type="hidden"
+              name="productId"
+              value="<%= item.product._id %>"
+            />
+            <input
+              type="number"
+              name="quantity"
+              value="<%= item.quantity %>"
+              min="1"
+              class="form-control me-2"
+              style="width: 80px"
+            />
+            <button type="submit" class="btn btn-secondary btn-sm">
+              Update
+            </button>
+          </form>
+        </td>
+        <td>$<%= (item.product.price * item.quantity).toFixed(2) %></td>
+        <td>
+          <form action="/cart/remove" method="POST">
+            <input
+              type="hidden"
+              name="productId"
+              value="<%= item.product._id %>"
+            />
+            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <% } %>
+  <a href="/products" class="btn btn-primary">Continue Shopping</a>
+</div>
+<%- include('partials/footer.ejs') %>

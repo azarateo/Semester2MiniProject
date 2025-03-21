@@ -1,50 +1,54 @@
 import express from "express";
 import mongoose from "mongoose";
 import path from "path";
-import dotenv from "dotenv";
 import { fileURLToPath } from "url";
-import { dirname } from "path";
+import dotenv from "dotenv";
+import session from "express-session";
 import productsRouter from "./routes/products.js";
+import cartRouter from "./routes/cart.js";
 
 dotenv.config();
-
 const PORT = process.env.PORT || 3000;
-
 const app = express();
 
+// Set __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(__filename);
 
+// Set EJS as templating engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+// Serve static assets
 app.use(express.static(path.join(__dirname, "public")));
+
+// Middleware for parsing JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  res.locals.bootstrapCSS =
-    "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
-  res.locals.bootstrapJS =
-    "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js";
-  next();
-});
+// Configure express-session
+app.use(
+  session({
+    secret: "your_secret_key", // Replace with a secure random string
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 // Connect to MongoDB Atlas
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log("Connected to MongoDB Atlas"))
-  .catch((err) => console.error("MongoDB connection error:", err));
+  .catch((err) => console.error("MongoDB Atlas connection error:", err));
 
-// Basic home route
+// Home route – render the homepage (includes navbar)
 app.get("/", (req, res) => {
-  res.render("index", { title: "Store App Home" });
+  res.render("index", { title: "Home" });
 });
 
-// Products route (uncomment when productsRouter is defined)
+// Mount routers
 app.use("/products", productsRouter);
+app.use("/cart", cartRouter);
 
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
