@@ -26,7 +26,15 @@
           <small class="text-muted"
             >Price: $<%= product.price.toFixed(2) %></small
           >
-          <!-- Future button or link for viewing details -->
+          <!-- Add to Cart Form -->
+          <form action="/cart/add" method="POST" class="d-inline me-2">
+            <input type="hidden" name="productId" value="<%= product._id %>" />
+            <!-- Default quantity is 1; you can also provide a field if you wish -->
+            <input type="hidden" name="quantity" value="1" />
+            <button type="submit" class="btn btn-success btn-sm">
+              Add to Cart
+            </button>
+          </form>
           <a
             href="/products/<%= product._id %>"
             class="btn btn-primary btn-sm float-end"
