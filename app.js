@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import session from "express-session";
 import productsRouter from "./routes/products.js";
 import cartRouter from "./routes/cart.js";
+import usersRouter from "./routes/users.js";
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
@@ -14,10 +15,6 @@ const app = express();
 // Set __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Set EJS as templating engine
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
 
 // Serve static assets
 app.use(express.static(path.join(__dirname, "public")));
@@ -34,6 +31,19 @@ app.use(
     saveUninitialized: false,
   })
 );
+
+// Middleware to pass session data to all views
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  next();
+});
+
+// ...
+app.use("/users", usersRouter);
+
+// Set EJS as templating engine
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 // Connect to MongoDB Atlas
 mongoose

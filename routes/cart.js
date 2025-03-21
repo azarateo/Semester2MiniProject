@@ -1,3 +1,4 @@
+import { ensureAuthenticated } from "../middleware/auth.js";
 import express from "express";
 import Product from "../models/Product.js";
 
@@ -11,7 +12,13 @@ const initCart = (req) => {
 };
 
 // GET /cart - Display the shopping cart
-router.get("/", (req, res) => {
+// router.get("/", (req, res) => {
+//   initCart(req);
+//   res.render("cart", { title: "Your Cart", cart: req.session.cart });
+// });
+
+// GET /cart - Display the shopping cart (protected)
+router.get("/", ensureAuthenticated, (req, res) => {
   initCart(req);
   res.render("cart", { title: "Your Cart", cart: req.session.cart });
 });
